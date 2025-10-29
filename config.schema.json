@@ -1,0 +1,3 @@
+{
+  "required": ["PORT",  "DB_PASS"]
+}

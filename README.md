@@ -27,7 +27,7 @@ Managing, merging, validating, and deploying these files manually can lead to mi
 
 ---
 
-## 🧩 Main Features (Conceptual Overview)
+## 🧩 Main Features Overview
 
 ### 1. 🔄 Merge `.env` Files (Phase 1)
 
@@ -37,17 +37,74 @@ During merging, if a variable exists in multiple files with different values, Co
 
 ```
 Conflict detected for "API_URL". Which value do you want to keep?
-1) Keep existing value: https://api.default.com
-2) Use new value: https://api.prod.com
+
+1. Keep existing value: https://api.default.com
+2. Use new value: https://api.prod.com
+   ```
+
+#### Command
+
+```bash
+configforge merge <files...> [options]
 ```
+
+#### Options
+
+| Option                   | Description                     | Default           |
+| ------------------------ | ------------------------------- | ----------------- |
+| `-s, --separator <char>` | Separator between merged values | `` (empty string) |
+| `-o, --output <file>`    | Output file name                | `.env.merged`     |
 
 - Custom separators supported
 - Safe default output: `.env.merged`
 - Confirmation before overwriting existing files
 
-### 2. ✅ Validation (Phase 2)
+---
 
-Ensure required environment variables exist before deployment.
+### 2. ✅ Validate `.env` Files (Phase 2)
+
+Ensure that all required environment variables exist **and conform to a predefined schema** before deployment.
+
+ConfigForge automatically validates your `.env` files against a `config.schema.json` file located in your project root. This schema defines all **required variables** your environment must include.
+
+Example schema (`config.schema.json`):
+
+```json
+{
+"required": ["API_KEY", "DATABASE_URL", "JWT_SECRET"]
+}
+```
+
+#### Command
+
+```bash
+configforge validate <files...>
+```
+
+- Supports **multiple .env files**
+- Highlights **missing** and **extra** variables clearly
+- Reads schema from **`config.schema.json`**
+- Provides a **visual summary** with colored CLI tables
+
+Example output:
+
+```
+❌ Validation Failed
+Found missing variables in 1 file(s).
+Found extra variables in 1 file(s).
+
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│ File            │ Missing Variables        │ Extra Variables                            │
+├─────────────────────────────────────────────────────────────────────────────────────────┤
+│ .env.production │ DATABASE_URL, JWT_SECRET │ TEMP_TOKEN, DEBUG_MODE                     │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+If all files match the schema:
+
+```
+✅ All 2 file(s) are valid and meet schema requirements.
+```
 
 ### 3. 🔒 Encryption & Decryption (Phase 3)
 

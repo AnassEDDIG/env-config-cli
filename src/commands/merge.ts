@@ -17,16 +17,16 @@ export async function merge(
       chalk.yellow(`⚠️  ${outputFile} exists and will be overwritten!`)
     );
     try {
-      const answer = await inquirer.prompt([
+      const { proceed } = await inquirer.prompt([
         {
           type: "confirm",
-          name: "continue",
+          name: "proceed",
           message: "Continue merging?",
           default: false,
         },
       ]);
 
-      if (!answer.continue) {
+      if (!proceed) {
         console.log(chalk.red("Merging cancelled."));
         process.exit(0);
       }

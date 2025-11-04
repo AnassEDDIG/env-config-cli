@@ -3,6 +3,7 @@ import { Command } from "commander";
 import { merge } from "../commands/merge.ts";
 import { validate } from "../commands/validate.ts"; // fixed filename typo
 import boxen from "boxen";
+import { encrypt } from "../commands/encrypt.ts";
 
 const program = new Command();
 console.log(
@@ -44,6 +45,33 @@ program
   .argument("<files...>", "Files to validate")
   .action(async (files: string[]) => {
     await validate(files);
+  });
+
+// Encrypt Command
+program
+  .command("encrypt")
+  .description(chalk.yellow("Encrypt multiple .env files"))
+  .argument("<files...>", "Files to encrypt")
+  .option("--key <key>", "Your secret key for encryption and decryption")
+  .option("-o, --output <file>", "Output file name", ".env.enc")
+  .action(async (files: string[], options) => {
+    const { key } = options;
+
+    if (!key) {
+      console.log(chalk.red("❌ Missing required option --key <key>"));
+      process.exit(1);
+    }
+
+    console.log(
+      chalk.blueBright("→ Encrypting file(s):"),
+      chalk.white(files.join(", "))
+    );
+    console.log(
+      chalk.yellow("→ Options:"),
+      chalk.white(JSON.stringify(options))
+    );
+
+    await encrypt(files, key, options);
   });
 
 program.parse(process.argv);

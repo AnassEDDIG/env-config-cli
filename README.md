@@ -40,7 +40,7 @@ Conflict detected for "API_URL". Which value do you want to keep?
 
 1. Keep existing value: https://api.default.com
 2. Use new value: https://api.prod.com
-   ```
+```
 
 #### Command
 
@@ -71,7 +71,7 @@ Example schema (`config.schema.json`):
 
 ```json
 {
-"required": ["API_KEY", "DATABASE_URL", "JWT_SECRET"]
+  "required": ["API_KEY", "DATABASE_URL", "JWT_SECRET"]
 }
 ```
 
@@ -108,7 +108,53 @@ If all files match the schema:
 
 ### 3. 🔒 Encryption & Decryption (Phase 3)
 
-Secure sensitive `.env` files using Node's crypto module.
+Secure sensitive `.env` files using Node’s `crypto` module.
+
+ConfigForge can **encrypt** and **decrypt** `.env` files using a secret key, ensuring that credentials and API tokens remain protected — especially in shared repositories or deployment pipelines.
+
+#### 🔐 Encrypt
+
+```bash
+configforge encrypt <files...> --key <secretKey> [options]
+```
+
+Example:
+
+```bash
+configforge encrypt .env.production --key mySecretKey
+```
+
+→ Outputs an encrypted file like:
+
+`
+.env.production.enc
+`
+
+#### 🔓 Decrypt
+
+```bash
+configforge decrypt <files...> --key <secretKey> [options]
+```
+
+Example:
+
+```bash
+configforge decrypt .env.production.enc --key mySecretKey
+```
+
+→ Restores your `.env.production` file.
+
+#### ⚙️ Options
+
+| Option                  | Description                               | Default      |
+| ----------------------- | ----------------------------------------- | ------------ |
+| `--key <secretKey>`   | Secret key used for encryption/decryption | **Required** |
+| `-o, --output <file>` | Specify custom output file name           | `.env.enc` |
+
+- Uses AES-256-CBC encryption with random IVs for each file
+- Prevents overwriting with confirmation prompts
+- Displays a success message after secure encryption
+- Designed for use in CI/CD pipelines and local setups"
 
 ### 4. 🧠 Type Generation (Phase 4)
 

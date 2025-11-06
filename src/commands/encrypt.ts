@@ -44,7 +44,7 @@ export async function encrypt(
       const fullPath = resolve(process.cwd(), file);
 
       if (!fs.existsSync(fullPath)) {
-        console.log(chalk.red(`❌ File not found: ${fullPath}`));
+        console.log(chalk.red(`❌ File not found: ${fullPath}, double check the path!`));
         continue;
       }
 

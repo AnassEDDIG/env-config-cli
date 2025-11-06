@@ -154,7 +154,7 @@ configforge decrypt .env.production.enc --key mySecretKey
 - Uses AES-256-CBC encryption with random IVs for each file
 - Prevents overwriting with confirmation prompts
 - Displays a success message after secure encryption
-- Designed for use in CI/CD pipelines and local setups"
+- Designed for use in CI/CD pipelines and local setups
 
 ### 4. 🧠 Type Generation (Phase 4)
 

@@ -4,6 +4,7 @@ import { merge } from "../commands/merge.ts";
 import { validate } from "../commands/validate.ts"; // fixed filename typo
 import boxen from "boxen";
 import { encrypt } from "../commands/encrypt.ts";
+import { decrypt } from "../commands/decrypt.ts";
 
 const program = new Command();
 console.log(
@@ -72,6 +73,33 @@ program
     );
 
     await encrypt(files, key, options);
+  });
+
+// Decrypt Command
+program
+  .command("decrypt")
+  .description(chalk.yellow("decrypt multiple .env files"))
+  .argument("<files...>", "Files to decrypt")
+  .option("--key <key>", "Your secret key for encryption and decryption")
+  .option("-o, --output <file>", "Output file name", ".env.dec")
+  .action(async (files: string[], options) => {
+    const { key } = options;
+
+    if (!key) {
+      console.log(chalk.red("❌ Missing required option --key <key>"));
+      process.exit(1);
+    }
+
+    console.log(
+      chalk.blueBright("→ Decrypting file(s):"),
+      chalk.white(files.join(", "))
+    );
+    console.log(
+      chalk.yellow("→ Options:"),
+      chalk.white(JSON.stringify(options))
+    );
+
+    await decrypt(files, key, options);
   });
 
 program.parse(process.argv);
